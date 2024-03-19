@@ -1,0 +1,37 @@
+import math
+
+def pixel_to_geo_coordinate(x, y, original_lat, original_lon, bearing):
+    # Define constants
+    R = 6378.137  # Radius of the Earth in kilometers
+    pixel_width = 480  # Width of the image in pixels
+    pixel_height = 640  # Height of the image in pixels
+    
+    # Convert bearing to radians
+    brng = math.radians(bearing)
+    
+    # Convert original geographical coordinates to radians
+    original_lat_rad = math.radians(original_lat)
+    original_lon_rad = math.radians(original_lon)
+    
+    # Convert pixel coordinates to distance from the origin in meters
+    distance_x = (x / pixel_width) * R * math.cos(original_lat_rad)
+    distance_y = (y / pixel_height) * R
+    
+    # Calculate the destination latitude and longitude
+    lat_rad = original_lat_rad + distance_y / R
+    lon_rad = original_lon_rad + distance_x / (R * math.cos(original_lat_rad))
+    
+    # Convert latitude and longitude back to degrees
+    lat = math.degrees(lat_rad)
+    lon = math.degrees(lon_rad)
+    
+    return lon, lat
+
+# Example usage
+original_coordinate = (40.0, -74.0)  # Example original geographical coordinates (left bottom)
+bearing = 90  # Example bearing (east)
+pixel_position = (320, 240)  # Example pixel position (x, y) in the image
+
+# Convert pixel position to geographical coordinates
+geo_coordinate = pixel_to_geo_coordinate(pixel_position[0], pixel_position[1], original_coordinate[0], original_coordinate[1], bearing)
+print("Geographical Coordinate:", geo_coordinate)
